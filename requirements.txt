@@ -1,0 +1,7 @@
+flask
+dotenv
+requests
+fastapi
+slack-bolt
+slack-sdk
+python-dotenv

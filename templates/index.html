@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification</title>
+    <style>
+        .tocenter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        body {
+            background-image: url("https://files.catbox.moe/0hiih4.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/xp.css">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- code from https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/widget-configurations/ -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <!--  CHANGE "data-sitekey" -->
+    <div class="tocenter">
+        <div class="window" style="width: 315px">
+            <div class="title-bar">
+                <div class="title-bar-text" style="font-family: 'Ubuntu', sans-serif;">Are you a real real person?</div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize"></button>
+                    <button aria-label="Maximize"></button>
+                    <button aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAE9Ee8OUygvDpvPk" data-theme="light"
+                    data-language="en-US" data-callback="onVerify"></div>
+                <p style="display: none; font-size: small; font-family: 'Ubuntu', sans-serif;" id="textgood">I think you are a human<br><br>You can close this tab</p>
+                <p style="display: none; font-size: small; font-family: 'Ubuntu', sans-serif;" id="neterror">Network Error</p>
+                <p style="display: none; font-size: small; font-family: 'Ubuntu', sans-serif;" id="robot">You are a robot 100%, i knew it</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Code with ia (sorry, i don't know js at all)
+        function onVerify(token) {
+            fetch("/verify/{{ id }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token })
+            })
+                .then(r => r.json())
+                //.then(data => alert(data.success ? "Verified!" : "Failed"))
+                .then(data => {
+                    if (data.success) {
+                        const turnstile = document.querySelector(".cf-turnstile");
+                        turnstile.style.display ="none";
+                        const goodtext = document.getElementById("textgood");
+                        goodtext.style.display="block";
+                    } else {
+                        const turnstile = document.querySelector(".cf-turnstile");
+                        turnstile.style.display ="none";
+                        const robot = document.getElementById("robot");
+                        robot.style.display="block";
+
+                    }
+                })
+                .catch(() =>  {
+                        const turnstile = document.querySelector(".cf-turnstile");
+                        turnstile.style.display ="none";
+                        const neterror = document.getElementById("neterror");
+                        neterror.style.display="block";
+                    }
+                    );
+
+        }
+    </script>
+</body>
+
+</html>
