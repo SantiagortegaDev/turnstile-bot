@@ -1,7 +1,8 @@
 flask
-dotenv
 requests
 fastapi
+uvicorn
 slack-bolt
 slack-sdk
 python-dotenv
+jinja2

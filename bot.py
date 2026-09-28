@@ -67,9 +67,8 @@ def verify_command(ack, respond, command):
     sessionid = str(uuid.uuid4())
     sessions2[sessionid] = {"slack_user_id": command["user_id"], "expires_at": time.time() + 600, "verified": False, "response_url": command["response_url"],}
     newsession(sessions2)
-    respond(text=f"Verify link: {os.environ['URL']}/verify/{sessionid}")
+    respond(text=f"Verify you here: {os.environ['URL']}/verify/{sessionid}")
 
 
-
+print("bot running...")
 SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
-print("bot is running!")

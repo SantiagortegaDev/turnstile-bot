@@ -90,7 +90,7 @@ async def verify(id: str, request: Request):
          try:
              requests.post(
                  session["response_url"],
-                 json={"replace_original": True, "text": "Yes! You are a human"},
+                 json={"replace_original": True, "text": "I verify you are a human"},
                  timeout=10,
              )
          except requests.RequestException as e:
