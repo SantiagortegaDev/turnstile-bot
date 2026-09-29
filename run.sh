@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 cd "$(dirname "$0")"
 
-PY=.venv/bin/python
+# Use the active venv, or ./.venv or ./venv, or the system python3 as a last resort
+if [ -n "$VIRTUAL_ENV" ]; then
+    PY="$VIRTUAL_ENV/bin/python"
+elif [ -x .venv/bin/python ]; then
+    PY=.venv/bin/python
+elif [ -x venv/bin/python ]; then
+    PY=venv/bin/python
+else
+    PY=python3
+fi
 
-$PY bot.py &
-BOT_PID=$!
-
-$PY -m uvicorn web:app --host 0.0.0.0 --port 8000 &
-WEB_PID=$!
-
-trap "kill $BOT_PID $WEB_PID 2>/dev/null" EXIT INT TERM
-wait
+# web.py also starts the Slack bot in the background
+exec $PY -m uvicorn web:app --host "${IP:-0.0.0.0}" --port "${PORT:-8000}"

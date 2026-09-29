@@ -8,9 +8,22 @@ import json
 import time
 import os
 import dotenv
-app = FastAPI()
+from contextlib import asynccontextmanager
 
 dotenv.load_dotenv()
+
+import bot
+
+
+@asynccontextmanager
+async def lifespan(app):
+    # start the Slack bot in the background alongside uvicorn
+    bot.handler.connect()
+    print("bot running...")
+    yield
+    bot.handler.close()
+
+app = FastAPI(lifespan=lifespan)
 
 
 templates = Jinja2Templates(directory="templates")

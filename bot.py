@@ -70,5 +70,8 @@ def verify_command(ack, respond, command):
     respond(text=f"Verify you here: {os.environ['URL']}/verify/{sessionid}")
 
 
-print("bot running...")
-SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
+handler = SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"])
+
+if __name__ == "__main__":
+    print("bot running...")
+    handler.start()
