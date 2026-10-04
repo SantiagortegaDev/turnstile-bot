@@ -14,7 +14,6 @@ dotenv.load_dotenv()
 
 import bot
 
-
 @asynccontextmanager
 async def lifespan(app):
     # start the Slack bot in the background alongside uvicorn
@@ -24,7 +23,6 @@ async def lifespan(app):
     bot.handler.close()
 
 app = FastAPI(lifespan=lifespan)
-
 
 templates = Jinja2Templates(directory="templates")
 
@@ -63,8 +61,7 @@ def update_slack_message(response_url, text):
         requests.post(
             response_url,
             json={"replace_original": True, "text": text},
-            timeout=10,
-        )
+            timeout=10,)
     except requests.RequestException as e:
         print(f"Slack update error: {e}")
 
@@ -84,7 +81,6 @@ async def verify(id: str, request: Request):
     token = body.get("token")
     data = sessions()
     session = data.get(id)
-
     if session is None:
         raise HTTPException(404, "session not found")
     if session["verified"]:
@@ -93,9 +89,7 @@ async def verify(id: str, request: Request):
         raise HTTPException(410, "expired session")
     if not token:
         raise HTTPException(400, "missing token")
-
     result = validate_turnstile(token, os.environ["TURNSTILE_SECRET"])
-
     if result.get("success"):
         session["verified"] = True
         newsession(data)

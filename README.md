@@ -31,5 +31,8 @@ also you can check your status any time with **/turnstile-bot-status**
 - channels:history
 - user
 
-## Ia?
+## IA usage?
 yes, i use ia for the proyect, for search documentation and review code, i don't understand slack bots at all yet, i have been only working with discord bots
+
+## More Screenshots!
+![screenshot2](assets/)

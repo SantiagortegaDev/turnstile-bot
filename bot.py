@@ -16,10 +16,11 @@ app = App(
 
 
 @app.command("/turnstile-bot-ping")
-def ping(command, ack, respond):
-    start = time.time()
+def ping(command, ack, respond, client):
     ack()
-    latency = int((time.time() - start) * 1000)
+    start = time.perf_counter()
+    client.api_test()
+    latency = int((time.perf_counter() - start) * 1000)
     respond(text=f"Pong!\nLatency: {latency}ms")
 
 
@@ -47,18 +48,16 @@ def status(command, ack, respond):
     )
     respond(text="Verified" if verified else "Not verified")
 
-
 def sessions():
     try:
         with open("sessions.json") as f:
             return json.load(f)
     except FileNotFoundError:
         return {}
-
+    
 def newsession(data):
     with open("sessions.json", "w") as f:
         json.dump(data, f)
-
 
 @app.command("/turnstile-bot-verify")
 def verify_command(ack, respond, command):
@@ -68,10 +67,7 @@ def verify_command(ack, respond, command):
     sessions2[sessionid] = {"slack_user_id": command["user_id"], "expires_at": time.time() + 600, "verified": False, "response_url": command["response_url"],}
     newsession(sessions2)
     respond(text=f"Verify you here: {os.environ['URL']}/verify/{sessionid}")
-
-
 handler = SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"])
-
 if __name__ == "__main__":
     print("bot running...")
     handler.start()
